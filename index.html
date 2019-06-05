@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Screen Resolution Tester</title>
+    <style>
+        .frame-wrapper {
+            max-width: 100%;
+            max-height: 50vw;
+            width: 90vw;
+            overflow: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Screen Resolution Tester</h1>
+        <p>Enter the URL and select a resolution that you want to see.</p>
+    </header>
+    <main>
+        <div>
+            <label for="url">Enter the URL that you want to have rendered:</label> <input type="text" name="url"
+                id="url" value="https://www.lansing.codes">
+            <button class="update">Update</button>
+        </div>
+        <div class="frame-wrapper">
+            <p>
+                <label for="width-0">Enter the resolution width you want to use:</label> <input type="number"
+                    name="width-0" id="width-0" class="width" value="4000">
+            </p>
+            <p>
+                <label for="height-0">Enter the resolution height you want to use:</label> <input type="number"
+                    name="height-0" id="height-0" class="height" value="800">
+            </p>
+            <iframe src="" frameborder="0"></iframe>
+        </div>
+    </main>
+    <script>
+        document.addEventListener('click', function (event) {
+            if (!event.target.matches('.update')) return;
+            event.preventDefault();
+            const url = document.getElementById('url').value;
+            const frames = document.querySelectorAll('iframe');
+            [].forEach.call(frames, function (frame) {
+                let width, height;
+                try {
+                    width = parseInt(frame.parentElement.querySelector('.width').value);
+                } catch (error) {
+                    width = 4000;
+                }
+                try {
+                    height = parseInt(frame.parentElement.querySelector('.height').value);
+                } catch (error) {
+                    height = 800;
+                }
+                frame.src = url;
+                frame.width = width;
+                frame.height = height;
+                if (history.pushState) {
+                    const shortcut = `${window.location.protocol}//${window.location.host}${window.location.pathname}?url=${url}&width=${width}&height=${height}`;
+                    window.history.pushState({ path: shortcut }, '', shortcut);
+                }
+            });
+        }, false);
+    </script>
+</body>
+
+</html>
