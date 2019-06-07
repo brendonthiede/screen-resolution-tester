@@ -40,32 +40,38 @@
         </div>
     </main>
     <script>
+        function renderResolution(frame) {
+            const url = document.getElementById('url').value;
+            let width, height;
+            try {
+                width = parseInt(frame.parentElement.querySelector('.width').value);
+            } catch (error) {
+                width = 4000;
+            }
+            try {
+                height = parseInt(frame.parentElement.querySelector('.height').value);
+            } catch (error) {
+                height = 800;
+            }
+            frame.src = url;
+            frame.width = width;
+            frame.height = height;
+            if (history.pushState) {
+                const shortcut = `${window.location.protocol}//${window.location.host}${window.location.pathname}?url=${url}&width=${width}&height=${height}`;
+                window.history.pushState({ path: shortcut }, '', shortcut);
+            }
+        }
+
         document.addEventListener('click', function (event) {
             if (!event.target.matches('.update')) return;
             event.preventDefault();
-            const url = document.getElementById('url').value;
             const frames = document.querySelectorAll('iframe');
             [].forEach.call(frames, function (frame) {
-                let width, height;
-                try {
-                    width = parseInt(frame.parentElement.querySelector('.width').value);
-                } catch (error) {
-                    width = 4000;
-                }
-                try {
-                    height = parseInt(frame.parentElement.querySelector('.height').value);
-                } catch (error) {
-                    height = 800;
-                }
-                frame.src = url;
-                frame.width = width;
-                frame.height = height;
-                if (history.pushState) {
-                    const shortcut = `${window.location.protocol}//${window.location.host}${window.location.pathname}?url=${url}&width=${width}&height=${height}`;
-                    window.history.pushState({ path: shortcut }, '', shortcut);
-                }
+                renderResolution(frame);
             });
         }, false);
+
+        renderResolution(document.querySelectorAll('iframe')[0]);
     </script>
 </body>
 
